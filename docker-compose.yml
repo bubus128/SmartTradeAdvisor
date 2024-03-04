@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  postgres-init:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: smarttrade
+      POSTGRES_USER: smarttradeuser
+      POSTGRES_PASSWORD: smarttradepassword
+    volumes:
+      - ./src/database:/docker-entrypoint-initdb.d
+    ports:
+      - "5432:5432"
+
+  dotnet-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - postgres-init
+    environment:
+      CONNECTION_STRING: "Host=postgres-init;Database=smarttrade;Username=smarttradeuser;Password=smarttradepassword"
+    ports:
+      - "5000:5000"

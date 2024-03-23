@@ -1,4 +1,4 @@
 namespace SmartTradeAdvisor.Core.Interfaces;
-internal interface IIndicatorService
+public interface IIndexService
 {
 }

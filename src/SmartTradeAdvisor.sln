@@ -5,17 +5,17 @@ VisualStudioVersion = 17.4.33205.214
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartTradeAdvisor.Api", "api\SmartTradeAdvisor.Api\SmartTradeAdvisor.Api.csproj", "{31BFCE55-FD62-494D-8E3F-2446F318D43E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartTradeAdvisor.Infrastructure", "infrastucture\SmartTradeAdvisor.Infrastructure\SmartTradeAdvisor.Infrastructure.csproj", "{3270AAF4-A3E0-4BE6-A56F-034E10915F67}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartTradeAdvisor.Data", "data\SmartTradeAdvisor.Data\SmartTradeAdvisor.Data.csproj", "{3270AAF4-A3E0-4BE6-A56F-034E10915F67}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartTradeAdvisor.Core", "core\SmartTradeAdvisor.Core\SmartTradeAdvisor.Core.csproj", "{32BBD87B-5B5B-4130-8F18-C9E78185B536}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartTradeAdvisor.Core", "core\SmartTradeAdvisor.Core\SmartTradeAdvisor.Core.csproj", "{32BBD87B-5B5B-4130-8F18-C9E78185B536}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{98316E60-E9EB-492A-8832-049EEFBB5DA2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartTradeAdvisor.Api.Tests", "tests\SmartTradeAdvisor.Api.Tests\SmartTradeAdvisor.Api.Tests.csproj", "{9195DE0B-905F-4ACC-8FE8-1BBFA28DF433}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartTradeAdvisor.Api.Tests", "tests\SmartTradeAdvisor.Api.Tests\SmartTradeAdvisor.Api.Tests.csproj", "{9195DE0B-905F-4ACC-8FE8-1BBFA28DF433}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartTradeAdvisor.Infrastructure.Tests", "tests\SmartTradeAdvisor.Infrastructure.Tests\SmartTradeAdvisor.Infrastructure.Tests.csproj", "{11956AB6-FE7F-4680-8CD2-47A70F2ECF3B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartTradeAdvisor.Data.Tests", "tests\SmartTradeAdvisor.Data.Tests\SmartTradeAdvisor.Data.Tests.csproj", "{11956AB6-FE7F-4680-8CD2-47A70F2ECF3B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartTradeAdvisor.Core.Tests", "tests\SmartTradeAdvisor.Core.Tests\SmartTradeAdvisor.Core.Tests.csproj", "{F5098A00-3E03-4351-92B0-D485D16D89FA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartTradeAdvisor.Core.Tests", "tests\SmartTradeAdvisor.Core.Tests\SmartTradeAdvisor.Core.Tests.csproj", "{F5098A00-3E03-4351-92B0-D485D16D89FA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

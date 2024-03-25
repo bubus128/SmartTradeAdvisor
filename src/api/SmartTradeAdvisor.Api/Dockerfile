@@ -9,18 +9,19 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["api/SmartTradeAdvisor.Api/SmartTradeAdvisor.Api.csproj", "api/SmartTradeAdvisor.Api/"]
-COPY ["infrastucture/SmartTradeAdvisor.Infrastructure/SmartTradeAdvisor.Data.csproj", "infrastucture/SmartTradeAdvisor.Infrastructure/"]
-RUN dotnet restore "./api/SmartTradeAdvisor.Api/./SmartTradeAdvisor.Api.csproj"
-COPY . .
-WORKDIR "/src/api/SmartTradeAdvisor.Api"
-RUN dotnet build "./SmartTradeAdvisor.Api.csproj" -c $BUILD_CONFIGURATION -o /app/build
+COPY . ./
+#COPY ["api/SmartTradeAdvisor.Api/SmartTradeAdvisor.Api.csproj", "api/SmartTradeAdvisor.Api/"]
+#COPY ["infrastucture/SmartTradeAdvisor.Infrastructure/SmartTradeAdvisor.Data.csproj", "infrastucture/SmartTradeAdvisor.Infrastructure/"]
+RUN dotnet restore
+#RUN dotnet restore "./api/SmartTradeAdvisor.Api/./SmartTradeAdvisor.Api.csproj"
+#WORKDIR "/src/api/SmartTradeAdvisor.Api"
+RUN dotnet build . -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./SmartTradeAdvisor.Api.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "./SmartTradeAdvisor.sln" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "SmartTradeAdvisor.Api.dll"]
+ENTRYPOINT ["dotnet", "SmartTradeAdvisor.dll"]

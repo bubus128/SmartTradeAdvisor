@@ -2,7 +2,7 @@ using SmartTradeAdvisor.Data.Entities;
 
 namespace SmartTradeAdvisor.Data.Interfaces;
 
-public interface IIndexRepository
+public interface IIndexesRepository
 {
     IEnumerable<MarketIndex> GetAll();
     MarketIndex GetById(Guid id);

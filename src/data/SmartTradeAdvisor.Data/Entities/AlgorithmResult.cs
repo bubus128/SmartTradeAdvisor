@@ -7,5 +7,5 @@ public class AlgorithmResult
     public Guid Id { get; set; }
     public DateTime Date { get; set; }
     public decimal Value { get; set; }
-    public required BuySellAlgorithm BuySellAlgorithm { get; set; }
+    public required TradingAlgorithm BuySellAlgorithm { get; set; }
 }

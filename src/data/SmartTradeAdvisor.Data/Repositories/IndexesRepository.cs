@@ -5,12 +5,12 @@ using SmartTradeAdvisor.Data.Interfaces;
 
 namespace SmartTradeAdvisor.Data.Repositories;
 
-public class IndexRepository : IIndexRepository
+public class IndexesRepository : IIndexesRepository
 {
     private readonly DbSet<MarketIndex> _dbSet;
     private readonly IndexDbContext _context;
 
-    public IndexRepository(IndexDbContext context)
+    public IndexesRepository(IndexDbContext context)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
         _dbSet = _context.Set<MarketIndex>();

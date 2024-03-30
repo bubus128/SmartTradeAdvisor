@@ -3,17 +3,17 @@
     "SmartTradeAdvisor.Api": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "indicator",
+      "launchUrl": "indexes",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "dotnetRunMessages": true,
-      "applicationUrl": "https://localhost:7115;http://localhost:5075"
+      "applicationUrl": "http://localhost:5075"
     },
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
-      "launchUrl": "indicator",
+      "launchUrl": "indexes",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
@@ -21,7 +21,7 @@
     "Docker": {
       "commandName": "Docker",
       "launchBrowser": true,
-      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/indicator",
+      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/indexes",
       "environmentVariables": {
         "ASPNETCORE_HTTPS_PORTS": "8081",
         "ASPNETCORE_HTTP_PORTS": "8080"

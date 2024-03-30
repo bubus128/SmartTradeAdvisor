@@ -40,7 +40,7 @@ public class IndexesRepository : IIndexesRepository
         // Validate arguments
         ArgumentNullException.ThrowIfNull(id);
 
-        return _dbSet.Find(id) ?? throw new KeyNotFoundException($"Indicator with id {id} was not found.");
+        return _dbSet.Find(id) ?? throw new KeyNotFoundException($"index with id {id} was not found.");
     }
 
     public void Save()

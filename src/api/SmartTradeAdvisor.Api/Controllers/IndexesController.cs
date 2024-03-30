@@ -16,7 +16,7 @@ public class IndexesController : ControllerBase
     [HttpGet]
     public IActionResult Get()
     {
-        return Ok("witam");
+        return Ok(_indexesRepository.GetAll());
     }
 
     [HttpGet("{id}")]

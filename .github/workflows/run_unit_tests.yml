@@ -1,0 +1,33 @@
+name: Run Unit Tests
+
+on:
+  pull_request:
+    branches:
+      - develop 
+  push:
+    branches:
+      - develop
+jobs:
+  unit_tests:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Setup .NET Core SDK
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 8.x 
+
+    - name: Restore dependencies
+      run: dotnet restore src/SmartTradeAdvisor.sln
+
+    - name: Api unit tests
+      run: dotnet test src/tests/SmartTradeAdvisor.Api.Tests/SmartTradeAdvisor.Api.Tests.csproj --verbosity normal
+    
+    - name: Core unit tests
+      run: dotnet test src/tests/SmartTradeAdvisor.Core.Tests/SmartTradeAdvisor.Core.Tests.csproj --verbosity normal
+
+    - name: Data unit tests
+      run: dotnet test src/tests/SmartTradeAdvisor.Data.Tests/SmartTradeAdvisor.Data.Tests.csproj --verbosity normal

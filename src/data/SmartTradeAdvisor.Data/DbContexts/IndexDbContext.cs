@@ -2,16 +2,14 @@ using Microsoft.EntityFrameworkCore;
 using SmartTradeAdvisor.Data.Entities;
 
 namespace SmartTradeAdvisor.Data.DbContexts;
-public class IndexDbContext : DbContext
+public class IndexDbContext(DbContextOptions<IndexDbContext> dbContextOptions) : DbContext(dbContextOptions)
 {
     public DbSet<MarketIndex> MarketIndexes { get; set; }
     public DbSet<MarketIndexValue> MarketIndexValues { get; set; }
-
-    public IndexDbContext(DbContextOptions<IndexDbContext> dbContextOptions) : base(dbContextOptions) { }
+    public DbSet<CalculatedIndex> CalculatedIndexes { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<MarketIndex>().ToTable("MarketIndexes");
-        modelBuilder.Entity<MarketIndexValue>().ToTable("MarketIndexValues");
+        base.OnModelCreating(modelBuilder);
     }
 }

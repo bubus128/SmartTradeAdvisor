@@ -26,4 +26,8 @@
     <ProjectReference Include="..\..\data\SmartTradeAdvisor.Data\SmartTradeAdvisor.Data.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="RepositoriesTests\" />
+  </ItemGroup>
+
 </Project>

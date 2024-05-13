@@ -1,28 +1,24 @@
 using Microsoft.AspNetCore.Mvc;
-using SmartTradeAdvisor.Data.Interfaces;
+using SmartTradeAdvisor.Data.DbContexts;
 
 namespace SmartTradeAdvisor.Api.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class IndexesController : ControllerBase
+public class IndexesController(IndexDbContext indexDbContext) : ControllerBase
 {
-    private readonly IIndexesRepository _indexesRepository;
-    public IndexesController(IIndexesRepository indexesRepository)
-    {
-        _indexesRepository = indexesRepository;
-    }
+    private readonly IndexDbContext _indexDbContext = indexDbContext;
 
     [HttpGet]
     public IActionResult Get()
     {
-        return Ok(_indexesRepository.GetAll());
+        return Ok(_indexDbContext.MarketIndexes.ToList());
     }
 
     [HttpGet("{id}")]
     public IActionResult Get(Guid id)
     {
-        var item = _indexesRepository.GetById(id);
+        var item = _indexDbContext.MarketIndexes.Find(id);
         if (item == null)
         {
             return NotFound();

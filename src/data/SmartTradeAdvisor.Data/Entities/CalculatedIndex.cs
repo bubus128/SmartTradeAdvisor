@@ -2,17 +2,21 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SmartTradeAdvisor.Data.Entities;
-public class MarketIndexValue
+
+public abstract class CalculatedIndex(string name)
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public Guid Id { get; set; }
 
-    public DateTime Date { get; set; }
-    public double LowValue { get; set; }
-    public double HighValue { get; set; }
+    public string Name { get; set; } = name;
 
+    [Required]
+    public double Value { get; set; }
+
+    [Required]
     public Guid MarketIndexId { get; set; }
+
     [ForeignKey("MarketIndexId")]
-    public virtual required MarketIndex MarketIndex { get; set; }
+    public virtual MarketIndex MarketIndex { get; set; }
 }

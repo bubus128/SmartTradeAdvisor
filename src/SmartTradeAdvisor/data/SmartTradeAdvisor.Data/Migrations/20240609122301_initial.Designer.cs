@@ -12,8 +12,8 @@ using SmartTradeAdvisor.Data.DbContexts;
 namespace SmartTradeAdvisor.Data.Migrations
 {
     [DbContext(typeof(IndexDbContext))]
-    [Migration("20240602145713_Initial2")]
-    partial class Initial2
+    [Migration("20240609122301_initial")]
+    partial class initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -229,6 +229,9 @@ namespace SmartTradeAdvisor.Data.Migrations
                     b.Property<string>("MarketIndexId")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<double>("Volume")
+                        .HasColumnType("double precision");
 
                     b.HasKey("Id");
 

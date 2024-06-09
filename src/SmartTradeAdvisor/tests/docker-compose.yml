@@ -15,6 +15,15 @@ services:
     networks:
       - database_network
 
+  datafetcher:
+    build:
+      context: ./DataFetcher
+      dockerfile: Dockerfile
+    depends_on:
+      - smarttradeadvisor
+    networks:
+      - database_network
+
   pgadmin:
     image: dpage/pgadmin4
     restart: always

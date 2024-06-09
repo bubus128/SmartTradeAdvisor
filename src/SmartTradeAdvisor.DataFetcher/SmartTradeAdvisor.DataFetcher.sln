@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34701.34
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartTradeAdvisor.DataScraper", "SmartTradeAdvisor.DataScraper\SmartTradeAdvisor.DataScraper.csproj", "{198D4E1A-22C1-4DFD-952D-8C380725182B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartTradeAdvisor.DataFetcher", "SmartTradeAdvisor.DataFetcher\SmartTradeAdvisor.DataFetcher.csproj", "{2F2752A7-D512-42B5-9053-D47832C33CB3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +11,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{198D4E1A-22C1-4DFD-952D-8C380725182B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{198D4E1A-22C1-4DFD-952D-8C380725182B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{198D4E1A-22C1-4DFD-952D-8C380725182B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{198D4E1A-22C1-4DFD-952D-8C380725182B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2F2752A7-D512-42B5-9053-D47832C33CB3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2F2752A7-D512-42B5-9053-D47832C33CB3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2F2752A7-D512-42B5-9053-D47832C33CB3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2F2752A7-D512-42B5-9053-D47832C33CB3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

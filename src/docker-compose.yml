@@ -1,0 +1,57 @@
+version: '3.4'
+
+services:
+  smarttradeadvisor:
+    image: ${DOCKER_REGISTRY-}smarttradeadviso
+    build:
+      context: ./SmartTradeAdvisor
+      dockerfile: ./Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Docker
+      - DATABASE_URL=db://postgres:password@db:5432/smart_trade_db
+    networks:
+      - database_network
+
+  datafetcher:
+    build:
+      context: ./DataFetcher
+      dockerfile: Dockerfile
+    depends_on:
+      - smarttradeadvisor
+    networks:
+      - database_network
+
+  pgadmin:
+    image: dpage/pgadmin4
+    restart: always
+    ports:
+      - "8081:80" # Mapowanie portu 8081 z hosta na port 80 w kontenerze (interfejs pgAdmin)
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "pgadmin@example.com"
+      PGADMIN_DEFAULT_PASSWORD: "password123"
+    networks:
+      - database_network
+
+  db:
+    image: postgres
+    environment:
+      POSTGRES_DB: smart_trade_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - database_network
+
+volumes:
+  postgres_data:
+
+networks:
+  database_network:
+    driver: bridge

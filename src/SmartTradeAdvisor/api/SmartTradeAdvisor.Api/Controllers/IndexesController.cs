@@ -18,7 +18,7 @@ public class IndexesController(IndexDbContext indexDbContext, IIndexService inde
     }
 
     [HttpGet("{id}")]
-    public IActionResult Get(Guid id)
+    public IActionResult Get(string id)
     {
         var item = indexDbContext.MarketIndexes.Find(id);
         if (item == null)
@@ -26,6 +26,28 @@ public class IndexesController(IndexDbContext indexDbContext, IIndexService inde
             return NotFound();
         }
         return Ok(item);
+    }
+
+    [HttpGet("{id}/values")]
+    public IActionResult GetValues(string id)
+    {
+        var values = indexDbContext.MarketIndexValues.Where(x => x.MarketIndexId == id);
+        if (values == null)
+        {
+            return NotFound();
+        }
+        return Ok(values);
+    }
+
+    [HttpGet("{id}/values/latest")]
+    public IActionResult GetLatestValue(string id)
+    {
+        var value = indexDbContext.MarketIndexValues.OrderBy(x => x.Date).LastOrDefault(x => x.MarketIndexId == id);
+        if (value == null)
+        {
+            return NotFound();
+        }
+        return Ok(value);
     }
 
     [HttpPost]

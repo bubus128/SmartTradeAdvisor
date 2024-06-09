@@ -1,8 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace SmartTradeAdvisor.Data.Entities.Indexes;
-public abstract class Indicator
+namespace SmartTradeAdvisor.Data.Entities.Wallet;
+public class Wallet
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -12,12 +12,14 @@ public abstract class Indicator
     public double Value { get; set; }
 
     [Required]
-    public required string MarketIndexId { get; set; }
+    public DateTime Date { get; set; }
 
     [Required]
-    public DateTime Date { get; set; }
+    public required string Strategy { get; set; }
+
+    [Required]
+    public required string MarketIndexId { get; set; }
 
     [ForeignKey("MarketIndexId")]
     public virtual required MarketIndex MarketIndex { get; set; }
-
 }

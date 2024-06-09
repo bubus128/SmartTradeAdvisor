@@ -2,9 +2,9 @@ namespace SmartTradeAdvisor.Data.Entities.Indexes;
 
 public class Ult : Indicator
 {
-    public static double Calculate(List<double> highPrices, List<double> lowPrices, List<double> closingPrices)
+    public static double Calculate(List<MarketIndexValue> values)
     {
-        if (highPrices.Count < 28 || lowPrices.Count < 28 || closingPrices.Count < 28)
+        if (values.Count < 28)
         {
             throw new ArgumentException("Price lists must contain at least 28 elements.");
         }
@@ -12,12 +12,14 @@ public class Ult : Indicator
         List<double> bp = [];
         List<double> tr = [];
 
-        for (var i = 1; i < highPrices.Count; i++)
+        for (var i = 1; i < values.Count; i++)
         {
-            var buyingPressure = closingPrices[i] - Math.Min(lowPrices[i], closingPrices[i - 1]);
+            var buyingPressure = values[i].ClosingValue - Math.Min(values[i].LowValue, values[i - 1].ClosingValue);
             bp.Add(buyingPressure);
 
-            var trueRange = Math.Max(highPrices[i] - lowPrices[i], Math.Max(Math.Abs(highPrices[i] - closingPrices[i - 1]), Math.Abs(lowPrices[i] - closingPrices[i - 1])));
+            var trueRange = Math.Max(values[i].HighValue - values[i].LowValue,
+                Math.Max(Math.Abs(values[i].HighValue - values[i - 1].ClosingValue),
+                Math.Abs(values[i].LowValue - values[i - 1].ClosingValue)));
             tr.Add(trueRange);
         }
 

@@ -5,7 +5,7 @@ using SmartTradeAdvisor.DataFetcher.IndexService;
 
 class Program
 {
-    public static async Task Main(string[] args)
+    public static void Main(string[] args)
     {
         var builder = Host.CreateApplicationBuilder(args);
 
@@ -21,19 +21,19 @@ class Program
 
             var dataFetcher = serviceProvider.GetRequiredService<IDataFetcher>();
 
-            await dataFetcher.Init();
-            await dataFetcher.FetchAndSendData();
+            dataFetcher.Init();
+            dataFetcher.FetchAndSendData();
 
             using (var timer = new System.Timers.Timer(60000 * 60)) // Set the interval (e.g., 60000ms = 1 minute)
             {
-                timer.Elapsed += async (sender, e) =>
+                timer.Elapsed += (sender, e) =>
                 {
                     // Create a new scope for each timer tick
                     using var scope = host.Services.CreateScope();
                     var scopedProvider = scope.ServiceProvider;
 
                     var scopedDataFetcher = scopedProvider.GetRequiredService<IDataFetcher>();
-                    await scopedDataFetcher.FetchAndSendData(); // Example symbol: aapl
+                    scopedDataFetcher.FetchAndSendData(); // Example symbol: aapl
                 };
 
                 timer.Start();
@@ -45,7 +45,6 @@ class Program
                 timer.Stop();
             }
         }
-
-        await host.RunAsync();
+        host.Run();
     }
 }

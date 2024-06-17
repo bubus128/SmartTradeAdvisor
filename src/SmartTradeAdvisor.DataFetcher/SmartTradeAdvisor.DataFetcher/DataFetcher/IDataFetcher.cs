@@ -1,7 +1,7 @@
 ﻿namespace SmartTradeAdvisor.DataFetcher.DataFetcher;
 public interface IDataFetcher
 {
-    public Task Init();
-    public Task FetchAndSendData();
+    public void Init();
+    public void FetchAndSendData();
 }
 

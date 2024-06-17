@@ -8,7 +8,7 @@ namespace SmartTradeAdvisor.DataFetcher.DataFetcher;
 public class DataFetcher(IIndexService indexService, IConfiguration configuration) : IDataFetcher
 {
     private readonly List<string> _nasdaqSymbolsList = configuration.GetRequiredSection("Symbols:NasdaqSymbols").Get<List<string>>();
-    private readonly List<string> _binanceSymbolsList = [];//configuration.GetRequiredSection("Symbols:BinanceSymbols").Get<List<string>>();
+    private readonly List<string> _binanceSymbolsList = configuration.GetRequiredSection("Symbols:BinanceSymbols").Get<List<string>>();
 
 
     public void Init()

@@ -5,87 +5,93 @@ using SmartTradeAdvisor.Data.Entities;
 using SmartTradeAdvisor.Data.Entities.Indexes;
 
 namespace SmartTradeAdvisor.Core.IndexCalculators;
-public class IndexCalculator : IIndexCalculator
+public class IndexCalculator(IOptions<AlgorithmsConfiguration> algorithmConfiguration, IndexDbContext indexDbContext, MarketIndex marketIndex) : IIndexCalculator
 {
-    private readonly int _macdSignalLimit;
-    private readonly IndexDbContext _indexDbContext;
-    private readonly MarketIndex _marketIndex;
-    private readonly int _memoryLimit;
+    private readonly int _macdSignalLimit = algorithmConfiguration.Value.MacdSignalPeriod;
+    private readonly int _memoryLimit = algorithmConfiguration.Value.ValuesMemoryLimit;
 
-    public IndexCalculator(IOptions<AlgorithmsConfiguration> algorithmConfiguration, IndexDbContext indexDbContext, MarketIndex marketIndex)
+    public async Task CalculateAll(MarketIndexValue marketIndexValue)
     {
-        _marketIndex = marketIndex;
-        _indexDbContext = indexDbContext;
-        var configuration = algorithmConfiguration.Value;
-        _macdSignalLimit = configuration.MacdSignalPeriod;
-        _memoryLimit = configuration.ValuesMemoryLimit;
-        _indexDbContext = indexDbContext;
-    }
-
-    public void CalculateAll(MarketIndexValue marketIndexValue)
-    {
-        var lastValues = _marketIndex.MarketIndexValues.OrderByDescending(x => x.Date).Take(_memoryLimit).ToList();
+        var lastValues = marketIndex.MarketIndexValues.OrderByDescending(x => x.Date).Take(_memoryLimit).ToList();
         if (lastValues.Count < _memoryLimit)
         {
             return;
         }
 
-        _indexDbContext.Adx.Add(new Adx()
+        indexDbContext.Adx.Add(new Adx()
         {
-            MarketIndexId = _marketIndex.Id,
+            MarketIndexId = marketIndex.Id,
             Value = Adx.Calculate(lastValues),
-            MarketIndex = _marketIndex,
+            MarketIndex = marketIndex,
             Date = DateTime.Now,
         });
 
-        _indexDbContext.Cmo.Add(new Cmo()
+        indexDbContext.PositiveDis.Add(new PositiveDi()
         {
-            MarketIndexId = _marketIndex.Id,
+            MarketIndexId = marketIndex.Id,
+            Value = PositiveDi.Calculate(lastValues),
+            MarketIndex = marketIndex,
+            Date = DateTime.Now,
+        });
+
+        indexDbContext.NegativeDis.Add(new NegativeDi()
+        {
+            MarketIndexId = marketIndex.Id,
+            Value = NegativeDi.Calculate(lastValues),
+            MarketIndex = marketIndex,
+            Date = DateTime.Now,
+        });
+
+        indexDbContext.Cmo.Add(new Cmo()
+        {
+            MarketIndexId = marketIndex.Id,
             Value = Cmo.Calculate(lastValues),
-            MarketIndex = _marketIndex,
+            MarketIndex = marketIndex,
             Date = DateTime.Now,
         });
 
-        _indexDbContext.Mfi.Add(new Mfi()
+        indexDbContext.Mfi.Add(new Mfi()
         {
-            MarketIndexId = _marketIndex.Id,
+            MarketIndexId = marketIndex.Id,
             Value = Mfi.Calculate(lastValues),
-            MarketIndex = _marketIndex,
+            MarketIndex = marketIndex,
             Date = DateTime.Now,
         });
 
-        _indexDbContext.Rsi.Add(new Rsi()
+        indexDbContext.Rsi.Add(new Rsi()
         {
-            MarketIndexId = _marketIndex.Id,
+            MarketIndexId = marketIndex.Id,
             Value = Rsi.Calculate(lastValues),
-            MarketIndex = _marketIndex,
+            MarketIndex = marketIndex,
             Date = DateTime.Now,
         });
 
-        _indexDbContext.Ult.Add(new Ult()
+        indexDbContext.Ult.Add(new Ult()
         {
-            MarketIndexId = _marketIndex.Id,
+            MarketIndexId = marketIndex.Id,
             Value = Ult.Calculate(lastValues),
-            MarketIndex = _marketIndex,
+            MarketIndex = marketIndex,
             Date = DateTime.Now,
         });
 
-        _indexDbContext.Macd.Add(new Macd()
+        indexDbContext.Macd.Add(new Macd()
         {
-            MarketIndexId = _marketIndex.Id,
+            MarketIndexId = marketIndex.Id,
             Value = Macd.Calculate(lastValues),
-            MarketIndex = _marketIndex,
+            MarketIndex = marketIndex,
             Date = DateTime.Now,
         });
 
-        _indexDbContext.MacdSignal.Add(new MacdSignal()
+        if (indexDbContext.Macd.Count() > 9)
         {
-            MarketIndexId = _marketIndex.Id,
-            Value = MacdSignal.Calculate([.. _indexDbContext.Macd.OrderBy(x => x.Date).Take(_macdSignalLimit)], _macdSignalLimit),
-            MarketIndex = _marketIndex,
-            Date = DateTime.Now,
-        });
-
-        _indexDbContext.SaveChanges();
+            indexDbContext.MacdSignal.Add(new MacdSignal()
+            {
+                MarketIndexId = marketIndex.Id,
+                Value = MacdSignal.Calculate([.. indexDbContext.Macd.OrderByDescending(x => x.Date).Take(_macdSignalLimit)], _macdSignalLimit),
+                MarketIndex = marketIndex,
+                Date = DateTime.Now,
+            });
+        }
+        await indexDbContext.SaveChangesAsync().ConfigureAwait(false);
     }
 }

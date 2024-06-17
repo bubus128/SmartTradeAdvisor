@@ -12,8 +12,8 @@ using SmartTradeAdvisor.Data.DbContexts;
 namespace SmartTradeAdvisor.Data.Migrations
 {
     [DbContext(typeof(IndexDbContext))]
-    [Migration("20240609122301_initial")]
-    partial class initial
+    [Migration("20240615153759_init2")]
+    partial class init2
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -30,6 +30,9 @@ namespace SmartTradeAdvisor.Data.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("MarketIndexId")
                         .IsRequired()
@@ -51,6 +54,9 @@ namespace SmartTradeAdvisor.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("timestamp without time zone");
+
                     b.Property<string>("MarketIndexId")
                         .IsRequired()
                         .HasColumnType("text");
@@ -70,6 +76,9 @@ namespace SmartTradeAdvisor.Data.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("Discriminator")
                         .IsRequired()
@@ -100,6 +109,9 @@ namespace SmartTradeAdvisor.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("timestamp without time zone");
+
                     b.Property<string>("MarketIndexId")
                         .IsRequired()
                         .HasColumnType("text");
@@ -120,6 +132,9 @@ namespace SmartTradeAdvisor.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("timestamp without time zone");
+
                     b.Property<string>("MarketIndexId")
                         .IsRequired()
                         .HasColumnType("text");
@@ -131,7 +146,7 @@ namespace SmartTradeAdvisor.Data.Migrations
 
                     b.HasIndex("MarketIndexId");
 
-                    b.ToTable("NegativeDi");
+                    b.ToTable("NegativeDis");
                 });
 
             modelBuilder.Entity("SmartTradeAdvisor.Data.Entities.Indexes.PositiveDi", b =>
@@ -140,6 +155,9 @@ namespace SmartTradeAdvisor.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("timestamp without time zone");
+
                     b.Property<string>("MarketIndexId")
                         .IsRequired()
                         .HasColumnType("text");
@@ -151,7 +169,7 @@ namespace SmartTradeAdvisor.Data.Migrations
 
                     b.HasIndex("MarketIndexId");
 
-                    b.ToTable("PositiveDi");
+                    b.ToTable("PositiveDis");
                 });
 
             modelBuilder.Entity("SmartTradeAdvisor.Data.Entities.Indexes.Rsi", b =>
@@ -159,6 +177,9 @@ namespace SmartTradeAdvisor.Data.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("MarketIndexId")
                         .IsRequired()
@@ -179,6 +200,9 @@ namespace SmartTradeAdvisor.Data.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("MarketIndexId")
                         .IsRequired()
@@ -238,6 +262,49 @@ namespace SmartTradeAdvisor.Data.Migrations
                     b.HasIndex("MarketIndexId");
 
                     b.ToTable("MarketIndexValues");
+                });
+
+            modelBuilder.Entity("SmartTradeAdvisor.Data.Entities.Wallet.Transaction", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<bool>("Seal")
+                        .HasColumnType("boolean");
+
+                    b.Property<Guid>("WalletId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("WalletId");
+
+                    b.ToTable("Transactions");
+                });
+
+            modelBuilder.Entity("SmartTradeAdvisor.Data.Entities.Wallet.Wallet", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("MarketIndexId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Strategy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MarketIndexId");
+
+                    b.ToTable("Wallets");
                 });
 
             modelBuilder.Entity("SmartTradeAdvisor.Data.Entities.Indexes.MacdSignal", b =>
@@ -346,9 +413,38 @@ namespace SmartTradeAdvisor.Data.Migrations
                     b.Navigation("MarketIndex");
                 });
 
+            modelBuilder.Entity("SmartTradeAdvisor.Data.Entities.Wallet.Transaction", b =>
+                {
+                    b.HasOne("SmartTradeAdvisor.Data.Entities.Wallet.Wallet", "Wallet")
+                        .WithMany("Transactions")
+                        .HasForeignKey("WalletId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Wallet");
+                });
+
+            modelBuilder.Entity("SmartTradeAdvisor.Data.Entities.Wallet.Wallet", b =>
+                {
+                    b.HasOne("SmartTradeAdvisor.Data.Entities.MarketIndex", "MarketIndex")
+                        .WithMany("Wallets")
+                        .HasForeignKey("MarketIndexId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("MarketIndex");
+                });
+
             modelBuilder.Entity("SmartTradeAdvisor.Data.Entities.MarketIndex", b =>
                 {
                     b.Navigation("MarketIndexValues");
+
+                    b.Navigation("Wallets");
+                });
+
+            modelBuilder.Entity("SmartTradeAdvisor.Data.Entities.Wallet.Wallet", b =>
+                {
+                    b.Navigation("Transactions");
                 });
 #pragma warning restore 612, 618
         }

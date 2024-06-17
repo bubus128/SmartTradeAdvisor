@@ -28,10 +28,17 @@ public class IndexesController(IndexDbContext indexDbContext, IIndexService inde
         return Ok(item);
     }
 
-    [HttpGet("{id}/values")]
-    public IActionResult GetValues(string id)
+    [HttpGet("{id}/values/{months}")]
+    public IActionResult GetValues(string id, int months)
     {
-        var values = indexDbContext.MarketIndexValues.Where(x => x.MarketIndexId == id);
+        var values = indexDbContext.MarketIndexValues
+            .Where(x => x.MarketIndexId == id && x.Date >= DateTime.Now.AddMonths(-months))
+            .Select(x =>
+            new ValueResponse()
+            {
+                Date = x.Date,
+                Price = x.Price
+            });
         if (values == null)
         {
             return NotFound();
@@ -42,49 +49,60 @@ public class IndexesController(IndexDbContext indexDbContext, IIndexService inde
     [HttpGet("{id}/values/latest")]
     public IActionResult GetLatestValue(string id)
     {
-        var value = indexDbContext.MarketIndexValues.OrderBy(x => x.Date).LastOrDefault(x => x.MarketIndexId == id);
+        var index = indexDbContext.MarketIndexes.Find(id);
+        if (index == null)
+        {
+            return NotFound();
+        }
+        var value = index.MarketIndexValues.MaxBy(x => x.Date);
         if (value == null)
         {
             return NotFound();
         }
-        return Ok(value);
+        var marketIndexResponse = mapper.Map<MarketIndexValueDto>(value);
+        return Ok(marketIndexResponse);
     }
 
     [HttpPost]
-    public IActionResult Post(MarketIndexDto index)
+    public async Task<IActionResult> Post(MarketIndexDto index)
     {
         try
         {
             var marketIndex = mapper.Map<MarketIndex>(index);
-            indexService.AddIndex(marketIndex);
+            await indexService.AddIndex(marketIndex).ConfigureAwait(false);
         }
-        catch
+        catch (Exception ex)
         {
-            return StatusCode(StatusCodes.Status500InternalServerError);
+            return StatusCode(StatusCodes.Status500InternalServerError, ex);
         }
         return Ok();
     }
 
     [HttpPost("{indexName}")]
-    public IActionResult Post(string indexName, List<MarketIndexValueDto> indexes)
+    public async Task<IActionResult> Post(string indexName, List<MarketIndexValueDto> indexes)
     {
         foreach (var index in indexes)
         {
-            var marketIndex = indexDbContext.MarketIndexes.Find(indexName);
+            var marketIndex = await indexDbContext.MarketIndexes.FindAsync(indexName).ConfigureAwait(false);
             if (marketIndex == null)
             {
                 return NotFound();
             }
 
+            var lastValue = marketIndex.MarketIndexValues.MaxBy(x => x.Date);
+            if (lastValue != null && lastValue.Date >= index.Date)
+            {
+                continue;
+            }
             try
             {
                 var indexValue = mapper.Map<MarketIndexValue>(index);
                 indexValue.MarketIndexId = marketIndex.Id;
-                indexService.AddValue(indexValue);
+                await indexService.AddValue(indexValue).ConfigureAwait(false);
             }
-            catch
+            catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex);
             }
         }
 

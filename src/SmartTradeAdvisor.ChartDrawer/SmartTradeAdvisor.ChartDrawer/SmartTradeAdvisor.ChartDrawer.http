@@ -1,0 +1,6 @@
+@SmartTradeAdvisor.ChartDrawer_HostAddress = http://localhost:5163
+
+GET {{SmartTradeAdvisor.ChartDrawer_HostAddress}}/chart/AAPL/adx/
+Accept: application/json
+
+###

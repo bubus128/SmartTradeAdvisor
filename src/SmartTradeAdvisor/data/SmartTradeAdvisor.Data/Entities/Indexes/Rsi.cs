@@ -2,8 +2,9 @@ namespace SmartTradeAdvisor.Data.Entities.Indexes;
 
 public class Rsi : Indicator
 {
-    public static double Calculate(List<double> closingPrices, int periods = 14)
+    public static double Calculate(List<MarketIndexValue> values, int periods = 14)
     {
+        var closingPrices = values.Select(x => x.ClosingValue).ToList();
         if (closingPrices.Count < periods)
         {
             throw new ArgumentException("Closing prices list must contain at least 'periods' elements.");

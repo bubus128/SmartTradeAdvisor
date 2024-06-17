@@ -2,16 +2,36 @@ namespace SmartTradeAdvisor.Data.Entities.Indexes;
 
 public class NegativeDi : Indicator
 {
-    public static double Calculate(LimitedList<double> highs, LimitedList<double> lows, double prevValue, double smoothingFactor)
+    private const int Period = 14;
+    public static double Calculate(List<MarketIndexValue> values)
     {
-        var highDifference = highs[^1] - highs[^2];
-        var lowDifference = lows[^2] - lows[^1];
+        if (values == null || values.Count < Period)
+            throw new ArgumentException("Insufficient data to calculate Negative DI");
 
-        var negativeDifference = lowDifference > highDifference && lowDifference > 0 ? lowDifference : 0;
+        double negativeDM = 0;
+        double trueRangeSum = 0;
 
-        var negativeDi = prevValue == 0 ? negativeDifference :
-            (negativeDifference - prevValue) * smoothingFactor + prevValue;
+        for (int i = 1; i < Period; i++)
+        {
+            double currentHigh = values[i].HighValue;
+            double currentLow = values[i].LowValue;
+            double previousHigh = values[i - 1].HighValue;
+            double previousLow = values[i - 1].LowValue;
 
-        return negativeDi;
+            double upMove = currentHigh - previousHigh;
+            double downMove = previousLow - currentLow;
+
+            if (downMove > upMove && downMove > 0)
+            {
+                negativeDM += downMove;
+            }
+
+            double trueRange = Math.Max(currentHigh - currentLow,
+                Math.Max(Math.Abs(currentHigh - values[i - 1].ClosingValue),
+                    Math.Abs(currentLow - values[i - 1].ClosingValue)));
+            trueRangeSum += trueRange;
+        }
+
+        return (negativeDM / trueRangeSum) * 100;
     }
 }

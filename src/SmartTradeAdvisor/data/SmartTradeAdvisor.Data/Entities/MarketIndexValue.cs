@@ -16,4 +16,7 @@ public class MarketIndexValue
 
     [ForeignKey("MarketIndexId")]
     public virtual required MarketIndex MarketIndex { get; set; }
+
+    [NotMapped]
+    public double Price => (LowValue + HighValue + ClosingValue) / 3;
 }

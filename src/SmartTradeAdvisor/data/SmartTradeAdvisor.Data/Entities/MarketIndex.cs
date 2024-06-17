@@ -14,6 +14,10 @@ public class MarketIndex
     [Required]
     public required List<MarketIndexValue> MarketIndexValues { get; set; } = [];
 
+    [Required]
+    public required List<Wallet.Wallet> Wallets { get; set; } = [];
+
     [NotMapped]
     public string Id => Name;
+
 }

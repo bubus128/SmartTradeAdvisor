@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using SmartTradeAdvisor.Core.Configurations;
 using SmartTradeAdvisor.Core.IndexCalculators;
 using SmartTradeAdvisor.Core.IndexService;
+using SmartTradeAdvisor.Core.WalletCalculator;
 using SmartTradeAdvisor.Data.DbContexts;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -22,6 +23,8 @@ builder.Services.Configure<AlgorithmsConfiguration>(builder.Configuration.GetSec
 builder.Services.AddAutoMapper(typeof(Program));
 
 builder.Services.AddScoped<IIndexCalculatorFactory, IndexCalculatorFactory>();
+
+builder.Services.AddScoped<IWalletService, WalletService>();
 
 builder.Services.AddScoped<IIndexService, IndexService>();
 

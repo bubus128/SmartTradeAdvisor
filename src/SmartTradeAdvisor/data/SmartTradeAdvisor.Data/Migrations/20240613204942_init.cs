@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace SmartTradeAdvisor.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class initial : Migration
+    public partial class init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -29,7 +29,8 @@ namespace SmartTradeAdvisor.Data.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Value = table.Column<double>(type: "double precision", nullable: false),
-                    MarketIndexId = table.Column<string>(type: "text", nullable: false)
+                    MarketIndexId = table.Column<string>(type: "text", nullable: false),
+                    Date = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -48,7 +49,8 @@ namespace SmartTradeAdvisor.Data.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Value = table.Column<double>(type: "double precision", nullable: false),
-                    MarketIndexId = table.Column<string>(type: "text", nullable: false)
+                    MarketIndexId = table.Column<string>(type: "text", nullable: false),
+                    Date = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -68,7 +70,8 @@ namespace SmartTradeAdvisor.Data.Migrations
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Discriminator = table.Column<string>(type: "character varying(13)", maxLength: 13, nullable: false),
                     Value = table.Column<double>(type: "double precision", nullable: false),
-                    MarketIndexId = table.Column<string>(type: "text", nullable: false)
+                    MarketIndexId = table.Column<string>(type: "text", nullable: false),
+                    Date = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -110,7 +113,8 @@ namespace SmartTradeAdvisor.Data.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Value = table.Column<double>(type: "double precision", nullable: false),
-                    MarketIndexId = table.Column<string>(type: "text", nullable: false)
+                    MarketIndexId = table.Column<string>(type: "text", nullable: false),
+                    Date = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -129,7 +133,8 @@ namespace SmartTradeAdvisor.Data.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Value = table.Column<double>(type: "double precision", nullable: false),
-                    MarketIndexId = table.Column<string>(type: "text", nullable: false)
+                    MarketIndexId = table.Column<string>(type: "text", nullable: false),
+                    Date = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -148,7 +153,8 @@ namespace SmartTradeAdvisor.Data.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Value = table.Column<double>(type: "double precision", nullable: false),
-                    MarketIndexId = table.Column<string>(type: "text", nullable: false)
+                    MarketIndexId = table.Column<string>(type: "text", nullable: false),
+                    Date = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -167,7 +173,8 @@ namespace SmartTradeAdvisor.Data.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Value = table.Column<double>(type: "double precision", nullable: false),
-                    MarketIndexId = table.Column<string>(type: "text", nullable: false)
+                    MarketIndexId = table.Column<string>(type: "text", nullable: false),
+                    Date = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -186,7 +193,8 @@ namespace SmartTradeAdvisor.Data.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Value = table.Column<double>(type: "double precision", nullable: false),
-                    MarketIndexId = table.Column<string>(type: "text", nullable: false)
+                    MarketIndexId = table.Column<string>(type: "text", nullable: false),
+                    Date = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -196,6 +204,45 @@ namespace SmartTradeAdvisor.Data.Migrations
                         column: x => x.MarketIndexId,
                         principalTable: "MarketIndexes",
                         principalColumn: "Name",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Wallets",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Strategy = table.Column<string>(type: "text", nullable: false),
+                    MarketIndexId = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Wallets", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Wallets_MarketIndexes_MarketIndexId",
+                        column: x => x.MarketIndexId,
+                        principalTable: "MarketIndexes",
+                        principalColumn: "Name",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Transactions",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Seal = table.Column<bool>(type: "boolean", nullable: false),
+                    Date = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    WalletId = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Transactions", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Transactions_Wallets_WalletId",
+                        column: x => x.WalletId,
+                        principalTable: "Wallets",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -240,8 +287,18 @@ namespace SmartTradeAdvisor.Data.Migrations
                 column: "MarketIndexId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Transactions_WalletId",
+                table: "Transactions",
+                column: "WalletId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Ult_MarketIndexId",
                 table: "Ult",
+                column: "MarketIndexId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Wallets_MarketIndexId",
+                table: "Wallets",
                 column: "MarketIndexId");
         }
 
@@ -273,7 +330,13 @@ namespace SmartTradeAdvisor.Data.Migrations
                 name: "Rsi");
 
             migrationBuilder.DropTable(
+                name: "Transactions");
+
+            migrationBuilder.DropTable(
                 name: "Ult");
+
+            migrationBuilder.DropTable(
+                name: "Wallets");
 
             migrationBuilder.DropTable(
                 name: "MarketIndexes");

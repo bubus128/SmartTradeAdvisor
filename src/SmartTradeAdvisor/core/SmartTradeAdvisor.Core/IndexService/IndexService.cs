@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using SmartTradeAdvisor.Core.Exceptions;
 using SmartTradeAdvisor.Core.IndexCalculators;
+using SmartTradeAdvisor.Core.WalletCalculator;
 using SmartTradeAdvisor.Data.DbContexts;
 using SmartTradeAdvisor.Data.Entities;
 
@@ -11,18 +12,21 @@ public class IndexService : IIndexService
 
     private readonly IndexDbContext _indexDbContext;
     private readonly IIndexCalculatorFactory _indexCalculatorFactory;
+    private readonly IWalletService _walletService;
 
-    public IndexService(IndexDbContext indexDbContext, IIndexCalculatorFactory indexCalculatorFactory)
+    public IndexService(IndexDbContext indexDbContext, IIndexCalculatorFactory indexCalculatorFactory, IWalletService walletService)
     {
         _indexDbContext = indexDbContext;
         _indexCalculatorFactory = indexCalculatorFactory;
-        foreach (var marketIndex in indexDbContext.MarketIndexes.Include(x => x.MarketIndexValues))
+        _walletService = walletService;
+        var marketIndexes = indexDbContext.MarketIndexes.Include(x => x.MarketIndexValues);
+        foreach (var marketIndex in marketIndexes)
         {
             _indexCalculators.Add(marketIndex.Id, indexCalculatorFactory.CreateIndexesCalculator(marketIndex));
         }
     }
 
-    public void AddIndex(MarketIndex index)
+    public async Task AddIndex(MarketIndex index)
     {
         ArgumentNullException.ThrowIfNull(index);
 
@@ -33,18 +37,22 @@ public class IndexService : IIndexService
 
         // Add the market index
         _indexDbContext.MarketIndexes.Add(index);
-        _indexDbContext.SaveChanges();
+        await _indexDbContext.SaveChangesAsync().ConfigureAwait(false);
 
         // Create index calculator for market index
         _indexCalculators.Add(index.Id, _indexCalculatorFactory.CreateIndexesCalculator(index));
     }
 
-    public void AddValue(MarketIndexValue indexValue)
+    public async Task AddValue(MarketIndexValue indexValue)
     {
+        // Update wallets based on yesterday indicators
+        await _walletService.CalculateAll(indexValue).ConfigureAwait(false);
+
         // Add index value
         _indexDbContext.MarketIndexValues.Add(indexValue);
-        _indexDbContext.SaveChanges();
+        await _indexDbContext.SaveChangesAsync().ConfigureAwait(false);
 
-        _indexCalculators[indexValue.MarketIndexId].CalculateAll(indexValue);
+        // Update indicators
+        await _indexCalculators[indexValue.MarketIndexId].CalculateAll(indexValue).ConfigureAwait(false);
     }
 }

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SmartTradeAdvisor.Data.DbContexts;
@@ -11,9 +12,11 @@ using SmartTradeAdvisor.Data.DbContexts;
 namespace SmartTradeAdvisor.Data.Migrations
 {
     [DbContext(typeof(IndexDbContext))]
-    partial class IndexDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240613204942_init")]
+    partial class init
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -77,6 +80,11 @@ namespace SmartTradeAdvisor.Data.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("timestamp without time zone");
 
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasMaxLength(13)
+                        .HasColumnType("character varying(13)");
+
                     b.Property<string>("MarketIndexId")
                         .IsRequired()
                         .HasColumnType("text");
@@ -89,29 +97,10 @@ namespace SmartTradeAdvisor.Data.Migrations
                     b.HasIndex("MarketIndexId");
 
                     b.ToTable("Macd");
-                });
 
-            modelBuilder.Entity("SmartTradeAdvisor.Data.Entities.Indexes.MacdSignal", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                    b.HasDiscriminator<string>("Discriminator").HasValue("Macd");
 
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<string>("MarketIndexId")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<double>("Value")
-                        .HasColumnType("double precision");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("MarketIndexId");
-
-                    b.ToTable("MacdSignal");
+                    b.UseTphMappingStrategy();
                 });
 
             modelBuilder.Entity("SmartTradeAdvisor.Data.Entities.Indexes.Mfi", b =>
@@ -157,7 +146,7 @@ namespace SmartTradeAdvisor.Data.Migrations
 
                     b.HasIndex("MarketIndexId");
 
-                    b.ToTable("NegativeDis");
+                    b.ToTable("NegativeDi");
                 });
 
             modelBuilder.Entity("SmartTradeAdvisor.Data.Entities.Indexes.PositiveDi", b =>
@@ -180,7 +169,7 @@ namespace SmartTradeAdvisor.Data.Migrations
 
                     b.HasIndex("MarketIndexId");
 
-                    b.ToTable("PositiveDis");
+                    b.ToTable("PositiveDi");
                 });
 
             modelBuilder.Entity("SmartTradeAdvisor.Data.Entities.Indexes.Rsi", b =>
@@ -318,6 +307,13 @@ namespace SmartTradeAdvisor.Data.Migrations
                     b.ToTable("Wallets");
                 });
 
+            modelBuilder.Entity("SmartTradeAdvisor.Data.Entities.Indexes.MacdSignal", b =>
+                {
+                    b.HasBaseType("SmartTradeAdvisor.Data.Entities.Indexes.Macd");
+
+                    b.HasDiscriminator().HasValue("MacdSignal");
+                });
+
             modelBuilder.Entity("SmartTradeAdvisor.Data.Entities.Indexes.Adx", b =>
                 {
                     b.HasOne("SmartTradeAdvisor.Data.Entities.MarketIndex", "MarketIndex")
@@ -341,17 +337,6 @@ namespace SmartTradeAdvisor.Data.Migrations
                 });
 
             modelBuilder.Entity("SmartTradeAdvisor.Data.Entities.Indexes.Macd", b =>
-                {
-                    b.HasOne("SmartTradeAdvisor.Data.Entities.MarketIndex", "MarketIndex")
-                        .WithMany()
-                        .HasForeignKey("MarketIndexId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("MarketIndex");
-                });
-
-            modelBuilder.Entity("SmartTradeAdvisor.Data.Entities.Indexes.MacdSignal", b =>
                 {
                     b.HasOne("SmartTradeAdvisor.Data.Entities.MarketIndex", "MarketIndex")
                         .WithMany()

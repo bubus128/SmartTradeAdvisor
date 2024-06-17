@@ -2,21 +2,21 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SmartTradeAdvisor.Data.Entities.Wallet;
-public class Wallet
+public class Transaction
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public Guid Id { get; set; }
 
     [Required]
-    public required string Strategy { get; set; }
+    public bool Seal { get; set; }
 
     [Required]
-    public required string MarketIndexId { get; set; }
+    public DateTime Date { get; set; }
 
+    [Required]
+    public required Guid WalletId { get; set; }
 
-    [ForeignKey("MarketIndexId")]
-    public virtual required MarketIndex MarketIndex { get; set; }
-
-    public required List<Transaction> Transactions { get; set; }
+    [ForeignKey("WalletId")]
+    public virtual required Wallet Wallet { get; set; }
 }
